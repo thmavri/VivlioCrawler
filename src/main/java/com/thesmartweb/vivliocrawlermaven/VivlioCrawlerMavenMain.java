@@ -79,7 +79,7 @@ public class VivlioCrawlerMavenMain {
             List<VivlioCrawlerMavenMain> listtotal = new ArrayList<VivlioCrawlerMavenMain>();
             //we capture all the names of the professors and former professor of ECE of AUTH from a txt file
             //change the directory to yours
-            List<String> profs=Files.readAllLines(Paths.get("/home/themis/NetBeansProjects/VivlioCrawler/src/vivliocrawler/profs.txt"));
+            List<String> profs=Files.readAllLines(Paths.get("/home/themis/NetBeansProjects/VivlioCrawlerMaven/src/main/java/com/thesmartweb/vivliocrawlermaven/profs.txt"));
             
             boolean more=true;//it is a flag used if we encounter more entries than the initial capture
             JSONArray array = new JSONArray();//it is going to be our final total json array
