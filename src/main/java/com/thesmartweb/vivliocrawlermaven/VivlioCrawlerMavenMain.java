@@ -41,6 +41,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 import org.json.simple.parser.JSONParser;
 import se.kb.oai.OAIException;
@@ -52,10 +53,12 @@ public class VivlioCrawlerMavenMain {
     //the names of the following variables are mostly self-explanatory
     public String title;
     public List<String> creators=new ArrayList<String>();//it will include all the students 'names
-    public List<String> subjects=new ArrayList<String>();//it captures the subjects of each thesis
+    public HashSet<String> subjects=new HashSet<String>();//it captures the subjects of each thesis. Hashset is used to ensure that we capture unique subjects
+    
     public String description;//abstract of the thesis
     public String datestring;
-    public List<String> thesisURLs=new ArrayList<String>();
+    public List<String> thesisFiles=new ArrayList<String>();
+    public String thesisURL;
     public String supervisor;
     public String citation;
     
@@ -63,6 +66,7 @@ public class VivlioCrawlerMavenMain {
         this.title="";
         this.description="";
         this.datestring="";
+        this.thesisURL="";
         this.supervisor="";
         this.citation="";
     }
@@ -116,7 +120,10 @@ public class VivlioCrawlerMavenMain {
                             }
                             if(name.equalsIgnoreCase("identifier")){
                                 if(element.getStringValue().contains("http://")){
-                                    vc.thesisURLs.add(element.getStringValue());//we capture the url of the thesis whole file
+                                    vc.thesisFiles.add(element.getStringValue());//we capture the url of the thesis whole file
+                                    if(vc.thesisURL==null){
+                                        vc.thesisURL=element.getStringValue().substring(0,32);
+                                    }
                                 }
                                 //if the identifier contains the title then it must be the citation 
                                 //out of the citation we need to extract the supevisor's name
@@ -185,12 +192,14 @@ public class VivlioCrawlerMavenMain {
                                     creatorsArray.add(vc.creators);
                                     obj.put("creators",creatorsArray);
                                     JSONArray subjectsArray = new JSONArray();
-                                    subjectsArray.add(vc.subjects);
+                                    List<String> subjectsList=new ArrayList<String>(vc.subjects);
+                                    subjectsArray.add(subjectsList);
                                     obj.put("subjects",subjectsArray);
                                     obj.put("datestring", vc.datestring);
-                                    JSONArray thesisURLsArray = new JSONArray();
-                                    thesisURLsArray.add(vc.thesisURLs);
-                                    obj.put("thesisURLs",thesisURLsArray);
+                                    JSONArray thesisFilesArray = new JSONArray();
+                                    thesisFilesArray.add(vc.thesisFiles);
+                                    obj.put("thesisFiles",thesisFilesArray);
+                                    obj.put("thesisURL", vc.thesisURL);
                                     obj.put("supervisor", vc.supervisor); 
                                     obj.put("citation",vc.citation);
                                     //if you are using JSON.simple do this
