@@ -55,7 +55,7 @@ public class VivlioCrawlerMavenMain {
     public List<String> subjects=new ArrayList<String>();//it captures the subjects of each thesis
     public String description;//abstract of the thesis
     public String datestring;
-    public String thesisURL;
+    public List<String> thesisURLs=new ArrayList<String>();
     public String supervisor;
     public String citation;
     
@@ -63,7 +63,6 @@ public class VivlioCrawlerMavenMain {
         this.title="";
         this.description="";
         this.datestring="";
-        this.thesisURL="";
         this.supervisor="";
         this.citation="";
     }
@@ -116,8 +115,8 @@ public class VivlioCrawlerMavenMain {
                                 vc.datestring=element.getStringValue();
                             }
                             if(name.equalsIgnoreCase("identifier")){
-                                if(element.getStringValue().contains("http://")&&element.getStringValue().contains(".pdf")){
-                                    vc.thesisURL=element.getStringValue();//we capture the url of the thesis whole file
+                                if(element.getStringValue().contains("http://")){
+                                    vc.thesisURLs.add(element.getStringValue());//we capture the url of the thesis whole file
                                 }
                                 //if the identifier contains the title then it must be the citation 
                                 //out of the citation we need to extract the supevisor's name
@@ -189,7 +188,9 @@ public class VivlioCrawlerMavenMain {
                                     subjectsArray.add(vc.subjects);
                                     obj.put("subjects",subjectsArray);
                                     obj.put("datestring", vc.datestring);
-                                    obj.put("thesisURL", vc.thesisURL);
+                                    JSONArray thesisURLsArray = new JSONArray();
+                                    thesisURLsArray.add(vc.thesisURLs);
+                                    obj.put("thesisURLs",thesisURLsArray);
                                     obj.put("supervisor", vc.supervisor); 
                                     obj.put("citation",vc.citation);
                                     //if you are using JSON.simple do this
